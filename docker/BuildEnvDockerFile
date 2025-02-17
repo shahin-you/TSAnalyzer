@@ -1,0 +1,47 @@
+# Use Ubuntu 24.04 as the base image
+FROM ubuntu:24.04
+
+# Avoid interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+LABEL Version="1.0.0"
+LABEL Description="Complete C++ Build Environment with GCC 13.3.0"
+ENV HOME=/root
+USER root
+
+# Install required packages: build tools, GCC/G++ 13, make, gdb, cmake, and git
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    ca-certificates \
+    gcc-13 \
+    g++-13 \
+    make \
+    gdb \
+    curl \
+    cmake \
+    git \
+    libxml2 \
+    libgtest-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set gcc/g++ alternatives to make gcc-13 and g++-13 the default compilers
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+
+#install gtest
+RUN apt-get update && apt-get install -y libgtest-dev cmake && \
+    mkdir -p /tmp/build && \
+    cd /tmp/build && \
+    cmake /usr/src/googletest/googletest && \
+    make && \
+    cp lib/libgtest*.a /usr/lib/ && \
+    cd / && rm -rf /tmp/build && \
+    mkdir -p /usr/local/lib/googletest && \
+    ln -s /usr/lib/libgtest.a /usr/local/lib/googletest/libgtest.a && \
+    ln -s /usr/lib/libgtest_main.a /usr/local/lib/googletest/libgtest_main.a
+    
+# Set the working directory for your project
+WORKDIR /workspace
+
+# Default command: launch bash
+CMD ["/bin/bash"]
