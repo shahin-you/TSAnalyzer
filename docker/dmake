@@ -29,6 +29,10 @@ case "$1" in
         fi
         docker run --rm -v "$PROJECT_DIR":/workspace -w /workspace -e IN_DOCKER=true "$DOCKER_IMAGE_NAME" /bin/bash -c "$@"
         ;;
+    -m|--make)
+        shift
+        docker run --rm -v "$PROJECT_DIR":/workspace -w /workspace -e IN_DOCKER=true "$DOCKER_IMAGE_NAME" make "$@"
+        ;;
     -B|--bash)
         shift
         docker run --rm -v "$PROJECT_DIR":/workspace -w /workspace -e IN_DOCKER=true -it "$DOCKER_IMAGE_NAME" /bin/bash
