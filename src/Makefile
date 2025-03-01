@@ -1,6 +1,6 @@
 NAME = TSAnalyzer
-CFLAGS = -Wall -Wextra -g
 CXX = g++
+CXXFLAGS = -std=c++17 -DNDEBUG -O2 -Wall -Wextra -g
 
 # Directories
 SRCDIR  := .
@@ -16,10 +16,10 @@ all: $(TARGET)
 # Rule to build the target executable
 $(TARGET): $(OBJECTS)
 	@mkdir -p $(BINDIR)
-	$(CXX) $(CFLAGS) -o $(TARGET) $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJECTS)
 
 %.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS)
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 run: $(TARGET)
 	./$(TARGET)
